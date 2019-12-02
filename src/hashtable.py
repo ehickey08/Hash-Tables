@@ -14,6 +14,8 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.storage = [None] * capacity
+        self.count = 0
+        self.resized = False
 
     def _hash(self, key):
         return hash(key)
@@ -33,6 +35,11 @@ class HashTable:
 
 
     def insert(self, key, value):
+        LF = self.count/self.capacity
+        if LF >= 0.7:
+            self.resize()
+
+        self.count += 1
         index = self._hash_mod(key)
         current_node = self.storage[index]
 
@@ -50,6 +57,11 @@ class HashTable:
 
 
     def remove(self, key):
+        LF = self.count/self.capacity
+        if LF <= 0.2 and self.resized:
+            self.resize(0.5)
+
+        self.count -= 1
         index = self._hash_mod(key)
         current_node = self.storage[index]
 
@@ -80,8 +92,9 @@ class HashTable:
         else:
             return None
 
-    def resize(self):
-        self.capacity *= 2
+    def resize(self, factor = 2):
+        self.resized = True
+        self.capacity *= factor
         old_storage = self.storage
         new_storage = [None] * self.capacity
         self.storage = new_storage
