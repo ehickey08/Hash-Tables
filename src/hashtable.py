@@ -7,11 +7,13 @@ class LinkedPair:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"({self.key}, {self.value})"
+
 class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.storage = [None] * capacity
-        self.count = 0
 
     def _hash(self, key):
         return hash(key)
@@ -27,49 +29,43 @@ class HashTable:
 
 
     def _hash_mod(self, key):
-        '''
-        Take an arbitrary key and return a valid integer index
-        within the storage capacity of the hash table.
-        '''
         return self._hash(key) % self.capacity
 
 
     def insert(self, key, value):
-        if self.count >= self.capacity:
-            self.resize()
-
-        self.count += 1
-        hash_key = self._hash(key) % self.capacity
-        current_node = self.storage[hash_key]
+        index = self._hash_mod(key)
+        current_node = self.storage[index]
         if current_node:
-            while current_node.next:
-                current_node = current_node.next
-            current_node.next = LinkedPair(key, value)
+            while current_node:
+                if current_node.key == key:
+                    current_node.value == value
+                    return;
+                elif current_node.next:
+                    current_node = current_node.next
+                else:
+                    current_node.next = LinkedPair(key, value)
+                    return
+
         else:
-            self.storage[hash_key] = LinkedPair(key, value)
+            self.storage[index] = LinkedPair(key, value)
 
 
 
 
     def remove(self, key):
-        self.count -= 1
-        hash_key = self._hash(key) % self.capacity
-        current_node = self.storage[hash_key]
+        index = self._hash_mod(key)
+        current_node = self.storage[index]
 
         if current_node:
-            if current_node.key == key:
-                self.stroage[hash] = current_node.next
-            else:
-                while current_node:
-                    prev_node = current_node
-                    current_node = current_node.next
-                    if current_node.key == key:
-                        prev_node.next = current_node.next
-                        return;
-                print("The key does not exist in the hash table.")
+            prev_node = current_node.next
+            while current_node:
+                if current_node.key == key:
+                    prev_node.next = current_node.next
+                    return;
+                prev_node = current_node
+                current_node = current_node.next
 
-        else:
-            print("The key does not exist in the hash table.")
+        return "The key does not exist in the hash table."
 
     def retrieve(self, key):
         hash_key = self._hash(key) % self.capacity
@@ -79,19 +75,20 @@ class HashTable:
                 if current_node.key == key:
                     return current_node.value;
                 current_node = current_node.next
-            print("The key does not exist in the hash table.")
+            return "The key does not exist in the hash table..."
 
         else:
-            print("The key does not exist in the hash table.")
+            return "The key does not exist in the hash table."
 
     def resize(self):
-        '''
-        Doubles the capacity of the hash table and
-        rehash all key/value pairs.
-
-        Fill this in.
-        '''
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        for i in range(len(self.storage)):
+            if self.storage[i]:
+                key = self.storage[i].key
+                hash_key = self._hash(key) % self.capacity
+                new_storage[hash_key] = self.storage[i]
+        self.storage = new_storage
 
 
 
