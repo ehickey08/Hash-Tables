@@ -72,15 +72,17 @@ class HashTable:
             print("The key does not exist in the hash table.")
 
     def retrieve(self, key):
-        '''
-        Retrieve the value stored with the given key.
+        hash_key = self._hash(key) % self.capacity
+        current_node = self.storage[hash_key]
+        if current_node:
+            while current_node:
+                if current_node.key == key:
+                    return current_node.value;
+                current_node = current_node.next
+            print("The key does not exist in the hash table.")
 
-        Returns None if the key is not found.
-
-        Fill this in.
-        '''
-        pass
-
+        else:
+            print("The key does not exist in the hash table.")
 
     def resize(self):
         '''
