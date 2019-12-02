@@ -8,21 +8,12 @@ class LinkedPair:
         self.next = None
 
 class HashTable:
-    '''
-    A hash table that with `capacity` buckets
-    that accepts string keys
-    '''
     def __init__(self, capacity):
-        self.capacity = capacity  # Number of buckets in the hash table
+        self.capacity = capacity
         self.storage = [None] * capacity
-
+        self.count = 0
 
     def _hash(self, key):
-        '''
-        Hash an arbitrary key and return an integer.
-
-        You may replace the Python hash with DJB2 as a stretch goal.
-        '''
         return hash(key)
 
 
@@ -44,27 +35,41 @@ class HashTable:
 
 
     def insert(self, key, value):
-        '''
-        Store the value with the given key.
+        if self.count >= self.capacity:
+            self.resize()
 
-        Hash collisions should be handled with Linked List Chaining.
+        self.count += 1
+        hash_key = self._hash(key) % self.capacity
+        current_node = self.storage[hash_key]
+        if current_node:
+            while current_node.next:
+                current_node = current_node.next
+            current_node.next = LinkedPair(key, value)
+        else:
+            self.storage[hash_key] = LinkedPair(key, value)
 
-        Fill this in.
-        '''
-        pass
 
 
 
     def remove(self, key):
-        '''
-        Remove the value stored with the given key.
+        self.count -= 1
+        hash_key = self._hash(key) % self.capacity
+        current_node = self.storage[hash_key]
 
-        Print a warning if the key is not found.
+        if current_node:
+            if current_node.key == key:
+                self.stroage[hash] = current_node.next
+            else:
+                while current_node:
+                    prev_node = current_node
+                    current_node = current_node.next
+                    if current_node.key == key:
+                        prev_node.next = current_node.next
+                        return;
+                print("The key does not exist in the hash table.")
 
-        Fill this in.
-        '''
-        pass
-
+        else:
+            print("The key does not exist in the hash table.")
 
     def retrieve(self, key):
         '''
