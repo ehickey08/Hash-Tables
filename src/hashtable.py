@@ -59,7 +59,7 @@ class HashTable:
     def remove(self, key):
         LF = self.count/self.capacity
         if LF <= 0.2 and self.resized:
-            self.resize(factor = 0.5)
+            self.resize(0.5)
 
         self.count -= 1
         index = self._hash_mod(key)
@@ -97,13 +97,11 @@ class HashTable:
         self.capacity = self.capacity * 2 if factor is 2 else self.capacity // 2
         old_storage = self.storage
         old_count = self.count
-        new_storage = [None] * self.capacity
-        self.storage = new_storage
+        self.storage = [None] * self.capacity
         for node in old_storage:
-            if node:
-                while node:
-                    self.insert(node.key, node.value)
-                    node = node.next
+            while node:
+                self.insert(node.key, node.value)
+                node = node.next
         self.count = old_count
 
 
