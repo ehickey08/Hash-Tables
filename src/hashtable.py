@@ -29,7 +29,7 @@ class HashTable:
         '''
         hash = 5381
         for char in key:
-            hash = hash * 33 + ord(char)
+            hash = hash * 33 + ord(char) #bitwise: hash << 5 + hash
         return hash
 
 
